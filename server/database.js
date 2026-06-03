@@ -14,7 +14,8 @@ async function initializeDb() {
       amount REAL NOT NULL,
       category TEXT NOT NULL,
       date TEXT NOT NULL,
-      note TEXT
+      note TEXT,
+      createdAt TEXT DEFAULT CURRENT_TIMESTAMP
     );
     CREATE TABLE IF NOT EXISTS budgets (
       category TEXT PRIMARY KEY,

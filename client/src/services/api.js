@@ -1,59 +1,71 @@
-const API_URL = 'http://localhost:5000/api/expenses';
+const API_URL = 'http://localhost:5000/api';
 
-export const getExpenses = async (filters = {}) => {
-  const query = new URLSearchParams(filters).toString();
-  const res = await fetch(`${API_URL}?${query}`);
-  if (!res.ok) throw new Error('Failed to fetch expenses');
-  return res.json();
-};
-
-export const getSummary = async () => {
-  const res = await fetch(`${API_URL}/summary`);
-  if (!res.ok) throw new Error('Failed to fetch summary');
-  return res.json();
-};
-
-export const addExpense = async (expense) => {
-  const res = await fetch(API_URL, {
-    method: 'POST',
+/**
+ * Generic fetch wrapper. Extracts `data` from the standard
+ * { success, data } response envelope.
+ */
+async function request(path, options = {}) {
+  const res = await fetch(`${API_URL}${path}`, {
     headers: { 'Content-Type': 'application/json' },
+    ...options,
+  });
+
+  // 204 No Content has no body
+  if (res.status === 204) return true;
+
+  const json = await res.json();
+
+  if (!res.ok) {
+    // Server returns { errors: [] } or { error: '' }
+    const message =
+      (json.errors && json.errors.join(', ')) ||
+      json.error ||
+      'An unexpected error occurred';
+    throw new Error(message);
+  }
+
+  return json.data !== undefined ? json.data : json;
+}
+
+// ── Expenses ────────────────────────────────────────────────────────
+
+export const getExpenses = (filters = {}) => {
+  const query = new URLSearchParams(
+    Object.fromEntries(Object.entries(filters).filter(([, v]) => v))
+  ).toString();
+  return request(`/expenses${query ? `?${query}` : ''}`);
+};
+
+export const getExpense = (id) => request(`/expenses/${id}`);
+
+export const getFilteredExpenses = (filters = {}) => {
+  const query = new URLSearchParams(
+    Object.fromEntries(Object.entries(filters).filter(([, v]) => v))
+  ).toString();
+  return request(`/expenses/filter${query ? `?${query}` : ''}`);
+};
+
+export const getSummary = () => request('/summary');
+
+export const addExpense = (expense) =>
+  request('/expenses', {
+    method: 'POST',
     body: JSON.stringify(expense),
   });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.error || 'Failed to add expense');
-  }
-  return res.json();
-};
 
-export const updateExpense = async (id, expense) => {
-  const res = await fetch(`${API_URL}/${id}`, {
+export const updateExpense = (id, expense) =>
+  request(`/expenses/${id}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(expense),
   });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.error || 'Failed to update expense');
-  }
-  return res.json();
-};
 
-export const deleteExpense = async (id) => {
-  const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-  if (!res.ok) throw new Error('Failed to delete expense');
-  return true;
-};
+export const deleteExpense = (id) =>
+  request(`/expenses/${id}`, { method: 'DELETE' });
 
-export const setBudget = async (category, amount) => {
-  const res = await fetch(`${API_URL}/budgets`, {
+// ── Budgets ─────────────────────────────────────────────────────────
+
+export const setBudget = (category, amount) =>
+  request('/expenses/budgets', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ category, amount }),
   });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.error || 'Failed to set budget');
-  }
-  return res.json();
-};
