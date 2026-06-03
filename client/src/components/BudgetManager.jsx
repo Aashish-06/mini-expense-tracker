@@ -5,25 +5,38 @@ import { Target, CheckCircle2, AlertTriangle } from 'lucide-react';
 
 function BudgetProgressBar({ category, budget, spent }) {
   if (!budget) return null;
-  const pct = Math.min((spent / budget) * 100, 100);
-  const over = spent > budget;
+  const rawPct = (spent / budget) * 100;
+  const pct    = Math.min(rawPct, 100);
+  const over   = spent > budget;
+  const warn   = !over && rawPct > 75;
 
   return (
-    <div className="space-y-1">
-      <div className="flex justify-between text-xs">
-        <span className="font-medium text-slate-300">{category}</span>
-        <span className={over ? 'text-red-400 font-semibold' : 'text-slate-400'}>
-          {formatCurrency(spent)} / {formatCurrency(budget)}
-          {over && <AlertTriangle className="inline ml-1" size={12} />}
-        </span>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span style={{ fontSize: '13px', fontWeight: '500', color: '#CBD5E1' }}>{category}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span style={{ fontSize: '12px', color: over ? '#FCA5A5' : '#94A3B8', fontWeight: over ? '600' : '400' }}>
+            {formatCurrency(spent)} / {formatCurrency(budget)}
+          </span>
+          {over && <AlertTriangle size={12} color="#EF4444" />}
+        </div>
       </div>
-      <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+      <div className="progress-track">
         <div
-          className={`h-full rounded-full transition-all duration-500 ${over ? 'bg-red-500' : pct > 75 ? 'bg-amber-500' : 'bg-emerald-500'}`}
+          className={`progress-fill ${over ? 'progress-danger' : warn ? 'progress-warning' : 'progress-success'}`}
           style={{ width: `${pct}%` }}
         />
       </div>
-      <div className="text-right text-xs text-slate-500">{pct.toFixed(0)}% used</div>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <span style={{ fontSize: '11px', color: over ? '#F87171' : warn ? '#FBBF24' : '#34D399', fontWeight: '500' }}>
+          {rawPct.toFixed(0)}% used
+        </span>
+        {over && (
+          <span style={{ fontSize: '11px', color: '#F87171', fontWeight: '500' }}>
+            Over by {formatCurrency(spent - budget)}
+          </span>
+        )}
+      </div>
     </div>
   );
 }
@@ -34,7 +47,6 @@ export default function BudgetManager({ budgets = {}, categoryBreakdown = [], on
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
 
-  // Build a spending map from the summary breakdown
   const spending = {};
   categoryBreakdown.forEach(item => { spending[item.category] = item.total; });
 
@@ -54,23 +66,32 @@ export default function BudgetManager({ budgets = {}, categoryBreakdown = [], on
       onBudgetUpdate();
       setAmount('');
       setTimeout(() => setMessage(''), 3000);
-    } catch (err) {
-      setMessage('Failed to save. Please try again.');
+    } catch {
+      setMessage('Failed to save. Try again.');
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div className="bg-card text-card-foreground p-6 rounded-2xl shadow-lg border border-border space-y-6">
-      <div className="flex items-center gap-2">
-        <Target className="text-emerald-500" size={22} />
-        <h3 className="text-lg font-semibold text-white">Budget Tracker</h3>
+    <div className="glass-card" style={{ padding: '24px' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+        <div style={{
+          width: '32px', height: '32px',
+          background: 'linear-gradient(135deg,rgba(16,185,129,0.25),rgba(5,150,105,0.18))',
+          border: '1px solid rgba(16,185,129,0.20)',
+          borderRadius: '9px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <Target size={15} color="#34D399" />
+        </div>
+        <h3 className="section-title">Set Category Budget</h3>
       </div>
 
-      {/* Progress bars for categories that have budgets */}
+      {/* Active budget progress bars */}
       {categoriesWithBudgets.length > 0 ? (
-        <div className="space-y-4">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '20px' }}>
           {categoriesWithBudgets.map(cat => (
             <BudgetProgressBar
               key={cat}
@@ -81,33 +102,33 @@ export default function BudgetManager({ budgets = {}, categoryBreakdown = [], on
           ))}
         </div>
       ) : (
-        <p className="text-slate-500 text-sm text-center py-2">
-          No budgets set yet. Set a budget below to track spending.
+        <p style={{ fontSize: '13px', color: '#475569', marginBottom: '20px', textAlign: 'center', padding: '12px 0' }}>
+          No budgets set yet. Set one below to start tracking.
         </p>
       )}
 
-      <hr className="border-border" />
+      <div className="gradient-divider" />
 
       {/* Budget setter form */}
-      <form onSubmit={handleSubmit} className="space-y-3">
-        <p className="text-sm font-medium text-slate-300">Set / Update Budget</p>
-        <div className="flex flex-col sm:flex-row gap-3">
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+        <p style={{ fontSize: '12.5px', fontWeight: '500', color: '#94A3B8' }}>Set / Update Budget</p>
+
+        <div style={{ display: 'flex', gap: '10px' }}>
           <select
             id="budget-category"
             value={selectedCategory}
-            onChange={(e) => {
+            onChange={e => {
               setSelectedCategory(e.target.value);
               setAmount(budgets[e.target.value] || '');
             }}
-            className="flex-1 bg-slate-900 border border-slate-700 rounded-lg py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all appearance-none"
+            className="premium-input"
+            style={{ flex: 1 }}
           >
-            {CATEGORIES.map(c => (
-              <option key={c} value={c}>{c}</option>
-            ))}
+            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
 
-          <div className="relative flex-1">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">₹</span>
+          <div className="input-wrap" style={{ flex: 1 }}>
+            <span className="input-prefix">₹</span>
             <input
               id="budget-amount"
               type="number"
@@ -115,24 +136,21 @@ export default function BudgetManager({ budgets = {}, categoryBreakdown = [], on
               min="0"
               required
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder={currentBudget ? currentBudget : 'Limit'}
-              className="w-full bg-slate-900 border border-slate-700 rounded-lg py-2 pl-8 pr-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+              onChange={e => setAmount(e.target.value)}
+              placeholder={currentBudget ? String(currentBudget) : 'Limit'}
+              className="premium-input"
             />
           </div>
-
-          <button
-            type="submit"
-            disabled={saving}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-5 rounded-lg transition-colors disabled:opacity-50 shrink-0"
-          >
-            {saving ? '...' : 'Save'}
-          </button>
         </div>
 
+        <button type="submit" disabled={saving} className="btn-success">
+          {saving ? 'Saving…' : 'Set Budget'}
+        </button>
+
         {message && (
-          <p className="text-sm text-emerald-400 flex items-center gap-1">
-            <CheckCircle2 size={14} /> {message}
+          <p className="success-flash">
+            <CheckCircle2 size={14} />
+            {message}
           </p>
         )}
       </form>

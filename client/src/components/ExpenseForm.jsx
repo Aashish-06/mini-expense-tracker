@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { CATEGORIES } from '../lib/utils';
-import { X } from 'lucide-react';
+import { X, Plus } from 'lucide-react';
 
 export default function ExpenseForm({ onSubmit, initialData = null, onCancel }) {
   const [formData, setFormData] = useState({
     amount: '',
     category: CATEGORIES[0],
     date: new Date().toISOString().split('T')[0],
-    note: ''
+    note: '',
   });
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -18,7 +18,7 @@ export default function ExpenseForm({ onSubmit, initialData = null, onCancel }) 
         amount: initialData.amount,
         category: initialData.category,
         date: initialData.date,
-        note: initialData.note || ''
+        note: initialData.note || '',
       });
     }
   }, [initialData]);
@@ -26,39 +26,26 @@ export default function ExpenseForm({ onSubmit, initialData = null, onCancel }) 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
-    // Validation
+
     const amountNum = parseFloat(formData.amount);
-    if (isNaN(amountNum) || amountNum <= 0) {
-      return setError('Amount must be a positive number');
-    }
-    if (!formData.category) {
-      return setError('Category is required');
-    }
-    if (!formData.date) {
-      return setError('Date is required');
-    }
-    
+    if (isNaN(amountNum) || amountNum <= 0) return setError('Amount must be a positive number');
+    if (!formData.category) return setError('Category is required');
+    if (!formData.date) return setError('Date is required');
+
     const expenseDate = new Date(formData.date);
     const today = new Date();
     today.setHours(23, 59, 59, 999);
-    if (expenseDate > today) {
-      return setError('Date cannot be in the future');
-    }
+    if (expenseDate > today) return setError('Date cannot be in the future');
 
     setIsSubmitting(true);
     try {
-      await onSubmit({
-        ...formData,
-        amount: amountNum
-      });
+      await onSubmit({ ...formData, amount: amountNum });
       if (!initialData) {
-        // Reset form if adding new
         setFormData({
           amount: '',
           category: CATEGORIES[0],
           date: new Date().toISOString().split('T')[0],
-          note: ''
+          note: '',
         });
       }
     } catch (err) {
@@ -69,86 +56,113 @@ export default function ExpenseForm({ onSubmit, initialData = null, onCancel }) 
   };
 
   return (
-    <div className="bg-card text-card-foreground p-6 rounded-2xl shadow-lg border border-border">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-white">
-          {initialData ? 'Edit Expense' : 'Add New Expense'}
-        </h3>
+    <div className="glass-card" style={{ padding: '24px' }}>
+      {/* Card header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '22px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{
+            width: '32px', height: '32px',
+            background: 'linear-gradient(135deg,rgba(59,130,246,0.25),rgba(139,92,246,0.2))',
+            border: '1px solid rgba(59,130,246,0.20)',
+            borderRadius: '9px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <Plus size={16} color="#60A5FA" strokeWidth={2.5} />
+          </div>
+          <h3 className="section-title">
+            {initialData ? 'Edit Expense' : 'Add New Expense'}
+          </h3>
+        </div>
         {onCancel && (
-          <button onClick={onCancel} className="text-slate-400 hover:text-white transition-colors">
-            <X size={20} />
+          <button
+            onClick={onCancel}
+            style={{
+              background: 'rgba(100,116,139,0.12)',
+              border: '1px solid rgba(100,116,139,0.18)',
+              borderRadius: '8px',
+              padding: '6px',
+              cursor: 'pointer',
+              color: '#64748B',
+              display: 'flex', alignItems: 'center',
+              transition: 'all 0.15s ease',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.color = '#ffffff'; e.currentTarget.style.background = 'rgba(100,116,139,0.22)'; }}
+            onMouseLeave={e => { e.currentTarget.style.color = '#64748B'; e.currentTarget.style.background = 'rgba(100,116,139,0.12)'; }}
+          >
+            <X size={16} />
           </button>
         )}
       </div>
 
-      {error && (
-        <div className="bg-red-500/10 border border-red-500 text-red-500 p-3 rounded-lg mb-4 text-sm">
-          {error}
-        </div>
-      )}
+      {/* Error */}
+      {error && <div className="error-msg" style={{ marginBottom: '16px' }}>{error}</div>}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+
+        {/* Amount */}
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Amount *</label>
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">₹</span>
+          <label className="form-label">Amount *</label>
+          <div className="input-wrap">
+            <span className="input-prefix">₹</span>
             <input
+              id="expense-amount"
               type="number"
               step="0.01"
               min="0.01"
               required
               value={formData.amount}
-              onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-              className="w-full bg-slate-900 border border-slate-700 rounded-lg py-2 pl-8 pr-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              onChange={e => setFormData({ ...formData, amount: e.target.value })}
+              className="premium-input"
               placeholder="0.00"
             />
           </div>
         </div>
 
+        {/* Category */}
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Category *</label>
+          <label className="form-label">Category *</label>
           <select
+            id="expense-category"
             required
             value={formData.category}
-            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all appearance-none"
+            onChange={e => setFormData({ ...formData, category: e.target.value })}
+            className="premium-input"
           >
-            {CATEGORIES.map(c => (
-              <option key={c} value={c}>{c}</option>
-            ))}
+            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
         </div>
 
+        {/* Date */}
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Date *</label>
+          <label className="form-label">Date *</label>
           <input
+            id="expense-date"
             type="date"
             required
             max={new Date().toISOString().split('T')[0]}
             value={formData.date}
-            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all [color-scheme:dark]"
+            onChange={e => setFormData({ ...formData, date: e.target.value })}
+            className="premium-input"
           />
         </div>
 
+        {/* Note */}
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Note (Optional)</label>
+          <label className="form-label">Note (Optional)</label>
           <input
+            id="expense-note"
             type="text"
             value={formData.note}
-            onChange={(e) => setFormData({ ...formData, note: e.target.value })}
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            onChange={e => setFormData({ ...formData, note: e.target.value })}
+            className="premium-input"
             placeholder="e.g. Lunch with team"
             maxLength={100}
           />
         </div>
 
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isSubmitting ? 'Saving...' : initialData ? 'Update Expense' : 'Add Expense'}
+        {/* Submit */}
+        <button type="submit" disabled={isSubmitting} className="btn-primary" style={{ marginTop: '4px' }}>
+          {isSubmitting ? 'Saving…' : initialData ? 'Update Expense' : 'Add Expense'}
         </button>
       </form>
     </div>

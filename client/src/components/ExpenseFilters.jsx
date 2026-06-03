@@ -9,100 +9,106 @@ const PERIOD_LABELS = {
   custom: 'Custom',
 };
 
-export default function ExpenseFilters({ filters, apiFilters, setCategory, setPeriod, setCustomRange, reset, hasActiveFilters, PERIODS }) {
+export default function ExpenseFilters({
+  filters, setCategory, setPeriod, setCustomRange,
+  reset, hasActiveFilters, PERIODS,
+}) {
   return (
-    <div className="bg-card text-card-foreground p-4 rounded-xl shadow-md border border-border mb-6 space-y-4">
-      <div className="flex flex-col sm:flex-row gap-4">
+    <div className="glass-card" style={{ padding: '20px 24px' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'flex-end' }}>
+
         {/* Category filter */}
-        <div className="flex-1">
-          <label className="flex items-center gap-2 text-sm font-medium text-slate-300 mb-1">
-            <Filter size={16} /> Category
+        <div style={{ flex: '1 1 160px', minWidth: '140px' }}>
+          <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Filter size={12} color="#64748B" /> Category
           </label>
           <select
             id="filter-category"
             value={filters.category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all appearance-none"
+            onChange={e => setCategory(e.target.value)}
+            className="premium-input"
+            style={{ height: '44px' }}
           >
             <option value="">All Categories</option>
-            {CATEGORIES.map(c => (
-              <option key={c} value={c}>{c}</option>
-            ))}
+            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
         </div>
 
-        {/* Period quick select */}
-        <div className="flex-1">
-          <label className="flex items-center gap-2 text-sm font-medium text-slate-300 mb-1">
-            <Calendar size={16} /> Period
+        {/* Period quick-select */}
+        <div style={{ flex: '2 1 260px' }}>
+          <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Calendar size={12} color="#64748B" /> Period
           </label>
-          <div className="flex flex-wrap gap-2">
-            {Object.entries(PERIOD_LABELS).filter(([k]) => k !== 'custom').map(([value, label]) => (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+            {Object.entries(PERIOD_LABELS).map(([value, label]) => (
               <button
                 key={value}
                 id={`period-${value}`}
                 onClick={() => setPeriod(value)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border ${
-                  filters.period === value
-                    ? 'bg-blue-600 border-blue-500 text-white'
-                    : 'bg-slate-900 border-slate-700 text-slate-300 hover:border-slate-500'
-                }`}
+                className={`period-chip ${filters.period === value ? 'active' : ''}`}
               >
                 {label}
               </button>
             ))}
           </div>
         </div>
+
+        {/* Clear filters */}
+        {hasActiveFilters && (
+          <div style={{ flexShrink: 0, paddingBottom: '1px' }}>
+            <button
+              id="clear-filters"
+              onClick={reset}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '5px',
+                background: 'rgba(239,68,68,0.10)',
+                border: '1px solid rgba(239,68,68,0.22)',
+                borderRadius: '10px',
+                padding: '9px 14px',
+                color: '#FCA5A5',
+                fontSize: '13px', fontWeight: '500',
+                cursor: 'pointer',
+                height: '44px',
+                fontFamily: 'Inter, sans-serif',
+                transition: 'all 0.15s ease',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.18)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.10)'; }}
+            >
+              <X size={14} /> Clear
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Custom date range — only shown when period = custom */}
+      {/* Custom date range */}
       {filters.period === PERIODS.CUSTOM && (
-        <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Custom Date Range</label>
-          <div className="flex items-center gap-2">
+        <div style={{ marginTop: '16px' }}>
+          <div className="gradient-divider" style={{ marginBottom: '16px', marginTop: '0' }} />
+          <label className="form-label">Custom Date Range</label>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <input
               id="filter-start-date"
               type="date"
               value={filters.startDate}
               max={new Date().toISOString().split('T')[0]}
-              onChange={(e) => setCustomRange(e.target.value, filters.endDate)}
-              className="flex-1 bg-slate-900 border border-slate-700 rounded-lg py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all [color-scheme:dark]"
+              onChange={e => setCustomRange(e.target.value, filters.endDate)}
+              className="premium-input"
+              style={{ flex: 1, height: '44px' }}
             />
-            <span className="text-slate-500 shrink-0">to</span>
+            <span style={{ color: '#334155', fontSize: '13px', flexShrink: 0, padding: '0 4px' }}>to</span>
             <input
               id="filter-end-date"
               type="date"
               value={filters.endDate}
               max={new Date().toISOString().split('T')[0]}
-              onChange={(e) => setCustomRange(filters.startDate, e.target.value)}
-              className="flex-1 bg-slate-900 border border-slate-700 rounded-lg py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all [color-scheme:dark]"
+              onChange={e => setCustomRange(filters.startDate, e.target.value)}
+              className="premium-input"
+              style={{ flex: 1, height: '44px' }}
             />
           </div>
         </div>
       )}
-
-      <div className="flex items-center gap-3">
-        <button
-          onClick={() => setPeriod(PERIODS.CUSTOM)}
-          className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
-            filters.period === PERIODS.CUSTOM
-              ? 'bg-blue-600 border-blue-500 text-white'
-              : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-white hover:border-slate-500'
-          }`}
-        >
-          Custom Range
-        </button>
-
-        {hasActiveFilters && (
-          <button
-            id="clear-filters"
-            onClick={reset}
-            className="flex items-center gap-1 text-xs text-red-400 hover:text-red-300 transition-colors ml-auto"
-          >
-            <X size={14} /> Clear all filters
-          </button>
-        )}
-      </div>
     </div>
   );
 }
