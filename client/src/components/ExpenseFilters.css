@@ -1,0 +1,92 @@
+/* ═══════════════════════════════════════════════
+   ExpenseFilters.css
+═══════════════════════════════════════════════ */
+
+.filters-card {
+  padding: 20px 24px;
+}
+
+.filters-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.filters-group-category {
+  flex: 1 1 160px;
+  min-width: 140px;
+}
+
+.filters-group-period {
+  flex: 2 1 260px;
+}
+
+.filters-label-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filters-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filters-input {
+  height: 44px;
+}
+
+.filters-clear-wrap {
+  flex-shrink: 0;
+  padding-bottom: 1px;
+}
+
+.filters-clear-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(239, 68, 68, 0.10);
+  border: 1px solid rgba(239, 68, 68, 0.22);
+  border-radius: 10px;
+  padding: 9px 14px;
+  color: #FCA5A5;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  height: 44px;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.15s ease;
+}
+
+.filters-clear-btn:hover {
+  background: rgba(239, 68, 68, 0.18);
+}
+
+.filters-custom-range {
+  margin-top: 16px;
+}
+
+.filters-custom-divider {
+  margin-bottom: 16px;
+  margin-top: 0;
+}
+
+.filters-custom-inputs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filters-custom-to {
+  color: #334155;
+  font-size: 13px;
+  flex-shrink: 0;
+  padding: 0 4px;
+}
+
+.filters-custom-input {
+  flex: 1;
+  height: 44px;
+}

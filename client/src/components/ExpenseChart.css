@@ -1,0 +1,147 @@
+/* ═══════════════════════════════════════════════
+   ExpenseChart.css
+═══════════════════════════════════════════════ */
+
+.chart-card {
+  padding: 24px;
+}
+
+.chart-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.chart-header-margin {
+  margin-bottom: 20px;
+}
+
+.chart-icon-box {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(139, 92, 246, 0.2));
+  border: 1px solid rgba(59, 130, 246, 0.20);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chart-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #334155;
+  gap: 8px;
+}
+
+.chart-empty-text {
+  font-size: 13px;
+}
+
+.chart-container {
+  position: relative;
+  height: 210px;
+}
+
+.chart-center-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.chart-total-amount {
+  font-size: 18px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.chart-total-text {
+  font-size: 11px;
+  color: #64748B;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.chart-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.chart-legend-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chart-legend-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chart-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.chart-legend-name {
+  font-size: 13px;
+  color: #94A3B8;
+  font-weight: 500;
+}
+
+.chart-legend-percent {
+  font-size: 11px;
+  color: #475569;
+  background: rgba(30, 41, 59, 0.6);
+  padding: 1px 7px;
+  border-radius: 99px;
+}
+
+.chart-legend-value {
+  font-size: 13px;
+  color: #CBD5E1;
+  font-weight: 600;
+}
+
+.chart-tooltip {
+  background: rgba(13, 19, 56, 0.97);
+  border: 1px solid rgba(59, 130, 246, 0.22);
+  border-radius: 12px;
+  padding: 10px 14px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  outline: none;
+}
+
+.chart-tooltip-name {
+  font-weight: 600;
+  color: #ffffff;
+  font-size: 13px;
+  margin-bottom: 3px;
+}
+
+.chart-tooltip-value {
+  color: #60A5FA;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.chart-tooltip-percent {
+  color: #64748B;
+  font-size: 11px;
+  margin-top: 2px;
+}

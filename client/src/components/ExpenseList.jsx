@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { formatCurrency } from '../lib/utils';
 import { Edit2, Trash2, Download, Receipt } from 'lucide-react';
 import ExpenseForm from './ExpenseForm';
+import './ExpenseList.css';
 
 /* ── Category pill helper ─────────────────────────────────────── */
 const PILL_CLASS = {
@@ -38,13 +39,9 @@ export default function ExpenseList({ expenses, onEdit, onDelete }) {
 
   if (!expenses.length) {
     return (
-      <div className="glass-card" style={{
-        display: 'flex', flexDirection: 'column',
-        alignItems: 'center', justifyContent: 'center',
-        padding: '56px 24px', gap: '12px',
-      }}>
+      <div className="glass-card list-empty-card">
         <Receipt size={40} color="#1e293b" strokeWidth={1.2} />
-        <p style={{ fontSize: '14px', color: '#334155', fontWeight: '500' }}>
+        <p className="list-empty-text">
           No expenses found for the selected criteria
         </p>
       </div>
@@ -52,31 +49,15 @@ export default function ExpenseList({ expenses, onEdit, onDelete }) {
   }
 
   return (
-    <div className="glass-card" style={{ overflow: 'hidden' }}>
+    <div className="glass-card list-card">
       {/* Table header row */}
-      <div style={{
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        padding: '18px 24px',
-        borderBottom: '1px solid rgba(30,41,59,0.8)',
-        background: 'rgba(5,13,37,0.40)',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{
-            width: '28px', height: '28px',
-            background: 'linear-gradient(135deg,rgba(59,130,246,0.22),rgba(139,92,246,0.16))',
-            border: '1px solid rgba(59,130,246,0.18)',
-            borderRadius: '8px',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
+      <div className="list-header">
+        <div className="list-header-left">
+          <div className="list-icon-box">
             <Receipt size={14} color="#60A5FA" />
           </div>
           <h3 className="section-title">Expense History</h3>
-          <span style={{
-            fontSize: '11px', fontWeight: '600', color: '#64748B',
-            background: 'rgba(30,41,59,0.7)',
-            border: '1px solid rgba(51,65,85,0.5)',
-            borderRadius: '99px', padding: '2px 9px',
-          }}>
+          <span className="list-count-badge">
             {expenses.length}
           </span>
         </div>
@@ -90,26 +71,14 @@ export default function ExpenseList({ expenses, onEdit, onDelete }) {
       </div>
 
       {/* Table */}
-      <div style={{ overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <div className="list-table-container">
+        <table className="list-table">
           <thead>
-            <tr style={{
-              background: 'rgba(5,13,37,0.30)',
-              borderBottom: '1px solid rgba(30,41,59,0.7)',
-            }}>
+            <tr className="list-thead-tr">
               {['Date', 'Category', 'Amount', 'Note', 'Actions'].map((h, i) => (
                 <th
                   key={h}
-                  style={{
-                    padding: '12px 20px',
-                    fontSize: '11px',
-                    fontWeight: '600',
-                    color: '#475569',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.08em',
-                    textAlign: i === 4 ? 'right' : 'left',
-                    whiteSpace: 'nowrap',
-                  }}
+                  className={`list-th ${i === 4 ? 'right' : 'left'}`}
                 >
                   {h}
                 </th>
@@ -121,37 +90,37 @@ export default function ExpenseList({ expenses, onEdit, onDelete }) {
               <React.Fragment key={expense.id}>
                 <tr className="expense-row">
                   {/* Date */}
-                  <td style={{ padding: '14px 20px', whiteSpace: 'nowrap', fontSize: '13px', color: '#94A3B8', fontWeight: '500' }}>
+                  <td className="list-td list-td-date">
                     {expense.date}
                   </td>
 
                   {/* Category pill */}
-                  <td style={{ padding: '14px 20px', whiteSpace: 'nowrap' }}>
+                  <td className="list-td">
                     <span className={getCatClass(expense.category)}>
                       {expense.category}
                     </span>
                   </td>
 
                   {/* Amount */}
-                  <td style={{ padding: '14px 20px', whiteSpace: 'nowrap' }}>
-                    <span style={{ fontSize: '14px', fontWeight: '700', color: '#ffffff', letterSpacing: '-0.01em' }}>
+                  <td className="list-td">
+                    <span className="list-td-amount">
                       {formatCurrency(expense.amount)}
                     </span>
                   </td>
 
                   {/* Note */}
                   <td
-                    style={{ padding: '14px 20px', fontSize: '13px', color: '#64748B', maxWidth: '220px' }}
+                    className="list-td list-td-note"
                     title={expense.note}
                   >
-                    <span style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {expense.note || <span style={{ color: '#1e293b' }}>—</span>}
+                    <span className="list-note-text">
+                      {expense.note || <span className="list-note-empty">—</span>}
                     </span>
                   </td>
 
                   {/* Actions */}
-                  <td style={{ padding: '14px 20px', textAlign: 'right', whiteSpace: 'nowrap' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px' }}>
+                  <td className="list-td list-td-actions">
+                    <div className="list-actions-wrap">
                       <ActionBtn
                         onClick={() => setEditingId(editingId === expense.id ? null : expense.id)}
                         color="#3B82F6"
@@ -177,12 +146,8 @@ export default function ExpenseList({ expenses, onEdit, onDelete }) {
                 {/* Inline edit form */}
                 {editingId === expense.id && (
                   <tr>
-                    <td colSpan={5} style={{
-                      padding: '0',
-                      background: 'rgba(5,13,37,0.6)',
-                      borderLeft: '3px solid #3B82F6',
-                    }}>
-                      <div style={{ padding: '20px 24px' }}>
+                    <td colSpan={5} className="list-edit-row">
+                      <div className="list-edit-container">
                         <ExpenseForm
                           initialData={expense}
                           onSubmit={async (data) => {

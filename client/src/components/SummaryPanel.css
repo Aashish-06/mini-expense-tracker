@@ -1,0 +1,149 @@
+/* ═══════════════════════════════════════════════
+   SummaryPanel.css
+═══════════════════════════════════════════════ */
+
+.summary-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.summary-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(239, 68, 68, 0.10);
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  border-radius: 14px;
+  padding: 14px 18px;
+  color: #FCA5A5;
+  font-size: 14px;
+}
+
+.summary-alert-banner {
+  padding: 20px 24px;
+}
+
+.summary-alert-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.summary-alert-icon {
+  padding: 8px;
+}
+
+.summary-alert-title {
+  font-weight: 700;
+  color: #FCA5A5;
+  font-size: 15px;
+}
+
+.summary-alert-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.summary-alert-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 7px;
+}
+
+.summary-alert-category {
+  font-size: 14px;
+  color: #E2E8F0;
+  font-weight: 500;
+}
+
+.summary-alert-stats {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.summary-alert-amounts {
+  font-size: 13px;
+  color: #94A3B8;
+}
+
+.summary-alert-spent {
+  color: #FCA5A5;
+  font-weight: 700;
+}
+
+.summary-alert-pct {
+  font-size: 12px;
+  font-weight: 700;
+  color: #EF4444;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+
+.summary-alert-progress {
+  width: 100%;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.summary-card {
+  padding: 22px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.summary-card-label {
+  font-size: 12px;
+  color: #64748B;
+  font-weight: 500;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.summary-card-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.summary-card-value-none {
+  font-size: 24px;
+  font-weight: 700;
+  color: #334155;
+  line-height: 1;
+}
+
+.summary-trend {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 8px;
+}
+
+.summary-trend-text {
+  font-size: 12px;
+  color: #34D399;
+  font-weight: 500;
+}
+
+.summary-card-sub {
+  font-size: 12px;
+  color: #64748B;
+  margin-top: 8px;
+  font-weight: 500;
+}

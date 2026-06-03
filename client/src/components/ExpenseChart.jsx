@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { formatCurrency } from '../lib/utils';
 import { PieChart as PieChartIcon } from 'lucide-react';
+import './ExpenseChart.css';
 
 const CHART_COLORS = ['#3B82F6', '#8B5CF6', '#10B981', '#F59E0B', '#EC4899', '#F43F5E', '#64748B'];
 
@@ -20,21 +21,14 @@ const getCategoryColor = (name, index) =>
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     return (
-      <div style={{
-        background: 'rgba(13,19,56,0.97)',
-        border: '1px solid rgba(59,130,246,0.22)',
-        borderRadius: '12px',
-        padding: '10px 14px',
-        boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-        outline: 'none',
-      }}>
-        <p style={{ fontWeight: '600', color: '#ffffff', fontSize: '13px', marginBottom: '3px' }}>
+      <div className="chart-tooltip">
+        <p className="chart-tooltip-name">
           {payload[0].name}
         </p>
-        <p style={{ color: '#60A5FA', fontWeight: '700', fontSize: '14px' }}>
+        <p className="chart-tooltip-value">
           {formatCurrency(payload[0].value)}
         </p>
-        <p style={{ color: '#64748B', fontSize: '11px', marginTop: '2px' }}>
+        <p className="chart-tooltip-percent">
           {payload[0].payload.percent}% of total
         </p>
       </div>
@@ -61,50 +55,33 @@ export default function ExpenseChart({ summary }) {
   // Empty state
   if (!data.length) {
     return (
-      <div className="glass-card" style={{ padding: '24px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '22px' }}>
-          <div style={{
-            width: '32px', height: '32px',
-            background: 'linear-gradient(135deg,rgba(59,130,246,0.25),rgba(139,92,246,0.2))',
-            border: '1px solid rgba(59,130,246,0.20)',
-            borderRadius: '9px',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
+      <div className="glass-card chart-card">
+        <div className="chart-header">
+          <div className="chart-icon-box">
             <PieChartIcon size={15} color="#60A5FA" />
           </div>
           <h3 className="section-title">Spending by Category</h3>
         </div>
-        <div style={{
-          display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'center',
-          height: '200px', color: '#334155',
-          gap: '8px',
-        }}>
+        <div className="chart-empty-state">
           <PieChartIcon size={36} strokeWidth={1} />
-          <p style={{ fontSize: '13px' }}>No expenses yet</p>
+          <p className="chart-empty-text">No expenses yet</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="glass-card" style={{ padding: '24px' }}>
+    <div className="glass-card chart-card">
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-        <div style={{
-          width: '32px', height: '32px',
-          background: 'linear-gradient(135deg,rgba(59,130,246,0.25),rgba(139,92,246,0.2))',
-          border: '1px solid rgba(59,130,246,0.20)',
-          borderRadius: '9px',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
+      <div className="chart-header chart-header-margin">
+        <div className="chart-icon-box">
           <PieChartIcon size={15} color="#60A5FA" />
         </div>
         <h3 className="section-title">Spending by Category</h3>
       </div>
 
       {/* Donut chart with centered total */}
-      <div style={{ position: 'relative', height: '210px' }}>
+      <div className="chart-container">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -132,46 +109,36 @@ export default function ExpenseChart({ summary }) {
         </ResponsiveContainer>
 
         {/* Center label — positioned over the donut hole */}
-        <div style={{
-          position: 'absolute', inset: 0,
-          display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'center',
-          pointerEvents: 'none',
-        }}>
-          <span style={{
-            fontSize: '18px', fontWeight: '800',
-            color: '#ffffff', letterSpacing: '-0.03em', lineHeight: 1,
-          }}>
+        <div className="chart-center-label">
+          <span className="chart-total-amount">
             {formatCurrency(totalAmount)}
           </span>
-          <span style={{ fontSize: '11px', color: '#64748B', marginTop: '4px', fontWeight: '500' }}>
+          <span className="chart-total-text">
             Total
           </span>
         </div>
       </div>
 
       {/* Legend */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '18px' }}>
+      <div className="chart-legend">
         {data.map((entry, index) => (
-          <div key={entry.name} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{
-                width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0,
-                background: getCategoryColor(entry.name, index),
-                boxShadow: `0 0 6px ${getCategoryColor(entry.name, index)}80`,
-              }} />
-              <span style={{ fontSize: '13px', color: '#94A3B8', fontWeight: '500' }}>
+          <div key={entry.name} className="chart-legend-item">
+            <div className="chart-legend-left">
+              <span 
+                className="chart-legend-dot"
+                style={{
+                  background: getCategoryColor(entry.name, index),
+                  boxShadow: `0 0 6px ${getCategoryColor(entry.name, index)}80`,
+                }} 
+              />
+              <span className="chart-legend-name">
                 {entry.name}
               </span>
-              <span style={{
-                fontSize: '11px', color: '#475569',
-                background: 'rgba(30,41,59,0.6)',
-                padding: '1px 7px', borderRadius: '99px',
-              }}>
+              <span className="chart-legend-percent">
                 {entry.percent}%
               </span>
             </div>
-            <span style={{ fontSize: '13px', color: '#CBD5E1', fontWeight: '600' }}>
+            <span className="chart-legend-value">
               {formatCurrency(entry.value)}
             </span>
           </div>

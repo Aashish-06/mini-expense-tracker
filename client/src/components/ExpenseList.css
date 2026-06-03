@@ -1,0 +1,147 @@
+/* ═══════════════════════════════════════════════
+   ExpenseList.css
+═══════════════════════════════════════════════ */
+
+.list-empty-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 24px;
+  gap: 12px;
+}
+
+.list-empty-text {
+  font-size: 14px;
+  color: #334155;
+  font-weight: 500;
+}
+
+.list-card {
+  overflow: hidden;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  border-bottom: 1px solid rgba(30, 41, 59, 0.8);
+  background: rgba(5, 13, 37, 0.40);
+}
+
+.list-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.list-icon-box {
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.22), rgba(139, 92, 246, 0.16));
+  border: 1px solid rgba(59, 130, 246, 0.18);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.list-count-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748B;
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+  border-radius: 99px;
+  padding: 2px 9px;
+}
+
+.list-table-container {
+  overflow-x: auto;
+}
+
+.list-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.list-thead-tr {
+  background: rgba(5, 13, 37, 0.30);
+  border-bottom: 1px solid rgba(30, 41, 59, 0.7);
+}
+
+.list-th {
+  padding: 12px 20px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.list-th.left {
+  text-align: left;
+}
+
+.list-th.right {
+  text-align: right;
+}
+
+.list-td {
+  padding: 14px 20px;
+  white-space: nowrap;
+}
+
+.list-td-date {
+  font-size: 13px;
+  color: #94A3B8;
+  font-weight: 500;
+}
+
+.list-td-amount {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+.list-td-note {
+  font-size: 13px;
+  color: #64748B;
+  max-width: 220px;
+}
+
+.list-note-text {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list-note-empty {
+  color: #1e293b;
+}
+
+.list-td-actions {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.list-actions-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.list-edit-row {
+  padding: 0;
+  background: rgba(5, 13, 37, 0.6);
+  border-left: 3px solid #3B82F6;
+}
+
+.list-edit-container {
+  padding: 20px 24px;
+}
