@@ -7,46 +7,85 @@ import ExpenseForm from './ExpenseForm';
 import ExpenseList from './ExpenseList';
 import ExpenseFilters from './ExpenseFilters';
 import BudgetManager from './BudgetManager';
-import { Activity, AlertCircle } from 'lucide-react';
+import AnalyticsPanel from './AnalyticsPanel';
+import { Activity, AlertCircle, Calendar } from 'lucide-react';
+
+function formatHeaderDate(date) {
+  return date.toLocaleDateString('en-IN', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  });
+}
 
 export default function Dashboard() {
-  const { filters, apiFilters, setCategory, setPeriod, setCustomRange, reset, hasActiveFilters, PERIODS } = useFilters();
-  const { expenses, summary, loading, error, reload, handleAdd, handleUpdate, handleDelete } = useExpenses(apiFilters);
+  const {
+    filters, apiFilters,
+    setCategory, setPeriod, setCustomRange,
+    reset, hasActiveFilters, PERIODS,
+  } = useFilters();
+
+  const {
+    expenses, summary, loading, error,
+    reload, handleAdd, handleUpdate, handleDelete,
+  } = useExpenses(apiFilters);
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="app-bg">
+      <div className="app-content" style={{ maxWidth: '1500px', margin: '0 auto', padding: '32px' }}>
 
-        {/* ── Header ─────────────────────────────────────────────── */}
-        <header className="flex items-center gap-3 border-b border-border pb-6">
-          <div className="bg-blue-600 p-2.5 rounded-xl shadow-lg shadow-blue-500/20">
-            <Activity className="text-white" size={28} />
+        {/* ── Header ─────────────────────────────────────────────────── */}
+        <header style={{
+          display: 'flex', alignItems: 'center',
+          justifyContent: 'space-between', marginBottom: '32px',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div className="logo-icon">
+              <Activity color="#ffffff" size={22} strokeWidth={2.5} />
+            </div>
+            <div>
+              <h1 style={{
+                fontSize: '24px', fontWeight: '800', color: '#ffffff',
+                letterSpacing: '-0.03em', lineHeight: 1.2,
+              }}>
+                Mini Expense Tracker
+              </h1>
+              <p style={{ fontSize: '13px', color: '#475569', marginTop: '3px', fontWeight: '400' }}>
+                Track your spending. Stay on budget.
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-white">
-              Mini Expense Tracker
-            </h1>
-            <p className="text-slate-400 text-sm mt-0.5">
-              Track daily spending • Visualize categories • Stay on budget
-            </p>
+
+          <div className="date-badge">
+            <Calendar size={14} color="#3B82F6" />
+            <span>{formatHeaderDate(new Date())}</span>
           </div>
         </header>
 
-        {/* ── Connection error ────────────────────────────────────── */}
+        {/* ── API Error banner ─────────────────────────────────────────── */}
         {error && (
-          <div
-            role="alert"
-            className="flex items-center gap-3 bg-red-500/10 border border-red-500/50 text-red-400 p-4 rounded-xl"
-          >
-            <AlertCircle size={20} className="shrink-0" />
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: '10px',
+            background: 'rgba(239,68,68,0.10)',
+            border: '1px solid rgba(239,68,68,0.30)',
+            borderRadius: '14px', padding: '14px 18px',
+            marginBottom: '24px', color: '#FCA5A5', fontSize: '14px',
+          }}>
+            <AlertCircle size={17} style={{ flexShrink: 0 }} />
             <span>{error}</span>
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* ── 2-column dashboard grid ──────────────────────────────────── */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '380px 1fr',
+          gap: '24px',
+          alignItems: 'start',
+        }}>
 
-          {/* ── Left column ─────────────────────────────────────── */}
-          <div className="space-y-8">
+          {/* ── LEFT SIDEBAR ───────────────────────────────────────────── */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <ExpenseForm onSubmit={handleAdd} />
             <ExpenseChart summary={summary} />
             <BudgetManager
@@ -56,10 +95,13 @@ export default function Dashboard() {
             />
           </div>
 
-          {/* ── Right column ────────────────────────────────────── */}
-          <div className="lg:col-span-2 space-y-6">
+          {/* ── RIGHT MAIN CONTENT ──────────────────────────────────────── */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+
+            {/* Summary: alert + stat cards */}
             <SummaryPanel summary={summary} />
 
+            {/* Filters */}
             <ExpenseFilters
               filters={filters}
               apiFilters={apiFilters}
@@ -71,13 +113,13 @@ export default function Dashboard() {
               PERIODS={PERIODS}
             />
 
+            {/* Expense table */}
             {loading ? (
-              <div className="flex justify-center items-center h-64 bg-card rounded-2xl border border-border">
-                <div
-                  role="status"
-                  aria-label="Loading expenses"
-                  className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"
-                />
+              <div className="glass-card" style={{
+                display: 'flex', justifyContent: 'center',
+                alignItems: 'center', height: '200px',
+              }}>
+                <div className="spinner" role="status" aria-label="Loading expenses" />
               </div>
             ) : (
               <ExpenseList
@@ -86,6 +128,18 @@ export default function Dashboard() {
                 onDelete={handleDelete}
               />
             )}
+
+            {/* Analytics summary cards */}
+            <AnalyticsPanel summary={summary} expenseCount={expenses.length} />
+
+            {/* Tip banner */}
+            <div className="tip-card">
+              <span style={{ fontSize: '18px', flexShrink: 0 }}>💡</span>
+              <p style={{ fontSize: '13px', color: '#94A3B8', lineHeight: 1.5 }}>
+                Keep tracking your expenses to stay on top of your budget! 🎯
+              </p>
+            </div>
+
           </div>
         </div>
 

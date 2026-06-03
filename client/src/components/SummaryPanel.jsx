@@ -1,71 +1,133 @@
 import React from 'react';
 import { formatCurrency } from '../lib/utils';
-import { Wallet, TrendingUp, AlertCircle, ShieldAlert } from 'lucide-react';
+import { Wallet, TrendingUp, ShieldAlert, AlertCircle } from 'lucide-react';
 
 export default function SummaryPanel({ summary, error }) {
   if (error) {
     return (
-      <div className="bg-red-500/10 border border-red-500 text-red-500 p-4 rounded-xl flex items-center gap-2">
-        <AlertCircle size={20} />
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: '10px',
+        background: 'rgba(239,68,68,0.10)', border: '1px solid rgba(239,68,68,0.28)',
+        borderRadius: '14px', padding: '14px 18px', color: '#FCA5A5', fontSize: '14px',
+      }}>
+        <AlertCircle size={17} />
         <span>Failed to load summary: {error}</span>
       </div>
     );
   }
 
-  const { totalThisMonth = 0, highestExpense = null, categoryBreakdown = [], budgets = {} } = summary || {};
+  const {
+    totalThisMonth = 0,
+    highestExpense = null,
+    categoryBreakdown = [],
+    budgets = {},
+  } = summary || {};
 
-  // Check for budget alerts
-  const overBudgetCategories = categoryBreakdown.filter(
+  const overBudget = categoryBreakdown.filter(
     item => budgets[item.category] && item.total > budgets[item.category]
   );
 
   return (
-    <div className="mb-6 space-y-4">
-      {overBudgetCategories.length > 0 && (
-        <div className="bg-red-500/10 border border-red-500/50 p-4 rounded-2xl flex flex-col gap-2">
-          <div className="flex items-center gap-2 text-red-400 font-semibold">
-            <ShieldAlert size={20} />
-            <span>Budget Exceeded Alerts</span>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+
+      {/* ── Budget Alert Banner ─────────────────────────────────────── */}
+      {overBudget.length > 0 && (
+        <div className="alert-banner" style={{ padding: '20px 24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
+            <div className="icon-box icon-red" style={{ padding: '8px' }}>
+              <ShieldAlert size={16} color="#FCA5A5" />
+            </div>
+            <span style={{ fontWeight: '700', color: '#FCA5A5', fontSize: '15px' }}>
+              Budget Exceeded Alert
+            </span>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-            {overBudgetCategories.map(item => (
-              <div key={item.category} className="bg-slate-900/50 p-3 rounded-lg flex justify-between items-center text-sm border border-red-500/20">
-                <span className="text-slate-300">{item.category}</span>
-                <div className="text-right">
-                  <span className="text-red-400 font-bold">{formatCurrency(item.total)}</span>
-                  <span className="text-slate-500 text-xs ml-1">/ {formatCurrency(budgets[item.category])}</span>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {overBudget.map(item => {
+              const pct = Math.round((item.total / budgets[item.category]) * 100);
+              return (
+                <div key={item.category}>
+                  <div style={{
+                    display: 'flex', justifyContent: 'space-between',
+                    alignItems: 'center', marginBottom: '7px',
+                  }}>
+                    <span style={{ fontSize: '14px', color: '#E2E8F0', fontWeight: '500' }}>
+                      {item.category}
+                    </span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <span style={{ fontSize: '13px', color: '#94A3B8' }}>
+                        <span style={{ color: '#FCA5A5', fontWeight: '700' }}>
+                          {formatCurrency(item.total)}
+                        </span>
+                        {' '}/ {formatCurrency(budgets[item.category])}
+                      </span>
+                      <span style={{
+                        fontSize: '12px', fontWeight: '700',
+                        color: '#EF4444',
+                        background: 'rgba(239,68,68,0.15)',
+                        border: '1px solid rgba(239,68,68,0.28)',
+                        borderRadius: '6px', padding: '2px 8px',
+                      }}>
+                        {pct}%
+                      </span>
+                    </div>
+                  </div>
+                  <div className="progress-track">
+                    <div
+                      className="progress-fill progress-danger"
+                      style={{ width: '100%' }}
+                    />
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-card text-card-foreground p-6 rounded-2xl shadow-lg border border-border flex items-center justify-between">
+      {/* ── Stat Cards ─────────────────────────────────────────────── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+
+        {/* Total spent */}
+        <div className="glass-card" style={{ padding: '22px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
           <div>
-            <p className="text-sm text-slate-400 font-medium mb-1">Total Spent This Month</p>
-            <h3 className="text-3xl font-bold text-white">{formatCurrency(totalThisMonth)}</h3>
+            <p style={{ fontSize: '12px', color: '#64748B', fontWeight: '500', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+              Total Spent This Month
+            </p>
+            <h3 style={{ fontSize: '28px', fontWeight: '800', color: '#ffffff', letterSpacing: '-0.04em', lineHeight: 1 }}>
+              {formatCurrency(totalThisMonth)}
+            </h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginTop: '8px' }}>
+              <TrendingUp size={12} color="#34D399" />
+              <span style={{ fontSize: '12px', color: '#34D399', fontWeight: '500' }}>This month</span>
+            </div>
           </div>
-          <div className="bg-blue-500/20 p-4 rounded-full">
-            <Wallet className="text-blue-500" size={28} />
+          <div className="icon-box icon-blue">
+            <Wallet size={22} color="#60A5FA" />
           </div>
         </div>
-        
-        <div className="bg-card text-card-foreground p-6 rounded-2xl shadow-lg border border-border flex items-center justify-between">
+
+        {/* Highest expense */}
+        <div className="glass-card" style={{ padding: '22px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
           <div>
-            <p className="text-sm text-slate-400 font-medium mb-1">Highest Single Expense</p>
+            <p style={{ fontSize: '12px', color: '#64748B', fontWeight: '500', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+              Highest Single Expense
+            </p>
             {highestExpense ? (
               <>
-                <h3 className="text-2xl font-bold text-white">{formatCurrency(highestExpense.amount)}</h3>
-                <p className="text-xs text-slate-400 mt-1">{highestExpense.category} - {highestExpense.date}</p>
+                <h3 style={{ fontSize: '28px', fontWeight: '800', color: '#ffffff', letterSpacing: '-0.04em', lineHeight: 1 }}>
+                  {formatCurrency(highestExpense.amount)}
+                </h3>
+                <p style={{ fontSize: '12px', color: '#64748B', marginTop: '8px', fontWeight: '500' }}>
+                  {highestExpense.category} • {highestExpense.date}
+                </p>
               </>
             ) : (
-              <h3 className="text-2xl font-bold text-slate-500">None</h3>
+              <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#334155', lineHeight: 1 }}>None</h3>
             )}
           </div>
-          <div className="bg-purple-500/20 p-4 rounded-full">
-            <TrendingUp className="text-purple-400" size={28} />
+          <div className="icon-box icon-purple">
+            <TrendingUp size={22} color="#A78BFA" />
           </div>
         </div>
       </div>

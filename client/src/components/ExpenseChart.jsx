@@ -1,65 +1,181 @@
 import React, { useMemo } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { formatCurrency } from '../lib/utils';
+import { PieChart as PieChartIcon } from 'lucide-react';
 
-const COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b', '#10b981', '#64748b'];
+const CHART_COLORS = ['#3B82F6', '#8B5CF6', '#10B981', '#F59E0B', '#EC4899', '#F43F5E', '#64748B'];
+
+const CATEGORY_COLORS = {
+  Food: '#3B82F6',
+  Transport: '#10B981',
+  Bills: '#F59E0B',
+  Entertainment: '#F97316',
+  Shopping: '#8B5CF6',
+  Other: '#64748B',
+};
+
+const getCategoryColor = (name, index) =>
+  CATEGORY_COLORS[name] || CHART_COLORS[index % CHART_COLORS.length];
+
+const CustomTooltip = ({ active, payload }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div style={{
+        background: 'rgba(13,19,56,0.97)',
+        border: '1px solid rgba(59,130,246,0.22)',
+        borderRadius: '12px',
+        padding: '10px 14px',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+        outline: 'none',
+      }}>
+        <p style={{ fontWeight: '600', color: '#ffffff', fontSize: '13px', marginBottom: '3px' }}>
+          {payload[0].name}
+        </p>
+        <p style={{ color: '#60A5FA', fontWeight: '700', fontSize: '14px' }}>
+          {formatCurrency(payload[0].value)}
+        </p>
+        <p style={{ color: '#64748B', fontSize: '11px', marginTop: '2px' }}>
+          {payload[0].payload.percent}% of total
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
 
 export default function ExpenseChart({ summary }) {
-  const data = useMemo(() => {
-    if (!summary || !summary.categoryBreakdown) return [];
-    return summary.categoryBreakdown
+  const { data, totalAmount } = useMemo(() => {
+    if (!summary?.categoryBreakdown) return { data: [], totalAmount: 0 };
+    const total = summary.categoryBreakdown.reduce((sum, item) => sum + item.total, 0);
+    const sorted = summary.categoryBreakdown
       .filter(item => item.total > 0)
+      .sort((a, b) => b.total - a.total)
       .map(item => ({
         name: item.category,
-        value: item.total
-      }))
-      .sort((a, b) => b.value - a.value);
+        value: item.total,
+        percent: total > 0 ? Math.round((item.total / total) * 100) : 0,
+      }));
+    return { data: sorted, totalAmount: total };
   }, [summary]);
 
+  // Empty state
   if (!data.length) {
     return (
-      <div className="bg-card text-card-foreground p-6 rounded-2xl shadow-lg border border-border flex flex-col items-center justify-center h-80">
-        <p className="text-slate-400">No data available for chart</p>
+      <div className="glass-card" style={{ padding: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '22px' }}>
+          <div style={{
+            width: '32px', height: '32px',
+            background: 'linear-gradient(135deg,rgba(59,130,246,0.25),rgba(139,92,246,0.2))',
+            border: '1px solid rgba(59,130,246,0.20)',
+            borderRadius: '9px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <PieChartIcon size={15} color="#60A5FA" />
+          </div>
+          <h3 className="section-title">Spending by Category</h3>
+        </div>
+        <div style={{
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          height: '200px', color: '#334155',
+          gap: '8px',
+        }}>
+          <PieChartIcon size={36} strokeWidth={1} />
+          <p style={{ fontSize: '13px' }}>No expenses yet</p>
+        </div>
       </div>
     );
   }
 
-  const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-slate-800 border border-slate-700 p-3 rounded-lg shadow-xl text-white text-sm">
-          <p className="font-semibold mb-1">{payload[0].name}</p>
-          <p className="text-blue-400 font-bold">{formatCurrency(payload[0].value)}</p>
-        </div>
-      );
-    }
-    return null;
-  };
-
   return (
-    <div className="bg-card text-card-foreground p-6 rounded-2xl shadow-lg border border-border h-80 flex flex-col">
-      <h3 className="text-lg font-semibold text-white mb-4">Spending by Category</h3>
-      <div className="flex-1 w-full h-full min-h-0">
+    <div className="glass-card" style={{ padding: '24px' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+        <div style={{
+          width: '32px', height: '32px',
+          background: 'linear-gradient(135deg,rgba(59,130,246,0.25),rgba(139,92,246,0.2))',
+          border: '1px solid rgba(59,130,246,0.20)',
+          borderRadius: '9px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <PieChartIcon size={15} color="#60A5FA" />
+        </div>
+        <h3 className="section-title">Spending by Category</h3>
+      </div>
+
+      {/* Donut chart with centered total */}
+      <div style={{ position: 'relative', height: '210px' }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
               data={data}
               cx="50%"
               cy="50%"
-              innerRadius={60}
-              outerRadius={90}
-              paddingAngle={5}
+              innerRadius={68}
+              outerRadius={95}
+              paddingAngle={4}
               dataKey="value"
-              stroke="transparent"
+              stroke="none"
+              startAngle={90}
+              endAngle={-270}
             >
               {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                <Cell
+                  key={`cell-${index}`}
+                  fill={getCategoryColor(entry.name, index)}
+                  opacity={0.92}
+                />
               ))}
             </Pie>
             <Tooltip content={<CustomTooltip />} />
-            <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '20px' }} />
           </PieChart>
         </ResponsiveContainer>
+
+        {/* Center label — positioned over the donut hole */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          pointerEvents: 'none',
+        }}>
+          <span style={{
+            fontSize: '18px', fontWeight: '800',
+            color: '#ffffff', letterSpacing: '-0.03em', lineHeight: 1,
+          }}>
+            {formatCurrency(totalAmount)}
+          </span>
+          <span style={{ fontSize: '11px', color: '#64748B', marginTop: '4px', fontWeight: '500' }}>
+            Total
+          </span>
+        </div>
+      </div>
+
+      {/* Legend */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '18px' }}>
+        {data.map((entry, index) => (
+          <div key={entry.name} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{
+                width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0,
+                background: getCategoryColor(entry.name, index),
+                boxShadow: `0 0 6px ${getCategoryColor(entry.name, index)}80`,
+              }} />
+              <span style={{ fontSize: '13px', color: '#94A3B8', fontWeight: '500' }}>
+                {entry.name}
+              </span>
+              <span style={{
+                fontSize: '11px', color: '#475569',
+                background: 'rgba(30,41,59,0.6)',
+                padding: '1px 7px', borderRadius: '99px',
+              }}>
+                {entry.percent}%
+              </span>
+            </div>
+            <span style={{ fontSize: '13px', color: '#CBD5E1', fontWeight: '600' }}>
+              {formatCurrency(entry.value)}
+            </span>
+          </div>
+        ))}
       </div>
     </div>
   );
