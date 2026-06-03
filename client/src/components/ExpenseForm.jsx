@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CATEGORIES } from '../lib/utils';
 import { X, Plus } from 'lucide-react';
+import './ExpenseForm.css';
 
 export default function ExpenseForm({ onSubmit, initialData = null, onCancel }) {
   const [formData, setFormData] = useState({
@@ -56,17 +57,11 @@ export default function ExpenseForm({ onSubmit, initialData = null, onCancel }) 
   };
 
   return (
-    <div className="glass-card" style={{ padding: '24px' }}>
+    <div className="glass-card form-card">
       {/* Card header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '22px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{
-            width: '32px', height: '32px',
-            background: 'linear-gradient(135deg,rgba(59,130,246,0.25),rgba(139,92,246,0.2))',
-            border: '1px solid rgba(59,130,246,0.20)',
-            borderRadius: '9px',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
+      <div className="form-header">
+        <div className="form-header-left">
+          <div className="form-icon-box">
             <Plus size={16} color="#60A5FA" strokeWidth={2.5} />
           </div>
           <h3 className="section-title">
@@ -76,18 +71,7 @@ export default function ExpenseForm({ onSubmit, initialData = null, onCancel }) 
         {onCancel && (
           <button
             onClick={onCancel}
-            style={{
-              background: 'rgba(100,116,139,0.12)',
-              border: '1px solid rgba(100,116,139,0.18)',
-              borderRadius: '8px',
-              padding: '6px',
-              cursor: 'pointer',
-              color: '#64748B',
-              display: 'flex', alignItems: 'center',
-              transition: 'all 0.15s ease',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.color = '#ffffff'; e.currentTarget.style.background = 'rgba(100,116,139,0.22)'; }}
-            onMouseLeave={e => { e.currentTarget.style.color = '#64748B'; e.currentTarget.style.background = 'rgba(100,116,139,0.12)'; }}
+            className="form-cancel-btn"
           >
             <X size={16} />
           </button>
@@ -95,9 +79,9 @@ export default function ExpenseForm({ onSubmit, initialData = null, onCancel }) 
       </div>
 
       {/* Error */}
-      {error && <div className="error-msg" style={{ marginBottom: '16px' }}>{error}</div>}
+      {error && <div className="error-msg form-error">{error}</div>}
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <form onSubmit={handleSubmit} className="form-body">
 
         {/* Amount */}
         <div>
@@ -161,7 +145,7 @@ export default function ExpenseForm({ onSubmit, initialData = null, onCancel }) 
         </div>
 
         {/* Submit */}
-        <button type="submit" disabled={isSubmitting} className="btn-primary" style={{ marginTop: '4px' }}>
+        <button type="submit" disabled={isSubmitting} className="btn-primary form-submit-btn">
           {isSubmitting ? 'Saving…' : initialData ? 'Update Expense' : 'Add Expense'}
         </button>
       </form>

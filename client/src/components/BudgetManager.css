@@ -1,0 +1,132 @@
+/* ═══════════════════════════════════════════════
+   BudgetManager.css
+═══════════════════════════════════════════════ */
+
+.budget-progress-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.budget-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.budget-category-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #CBD5E1;
+}
+
+.budget-amounts-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.budget-amounts-text {
+  font-size: 12px;
+}
+
+.budget-amounts-text.over {
+  color: #FCA5A5;
+  font-weight: 600;
+}
+
+.budget-amounts-text.normal {
+  color: #94A3B8;
+  font-weight: 400;
+}
+
+.budget-status-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.budget-used-text {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.budget-used-text.danger {
+  color: #F87171;
+}
+
+.budget-used-text.warning {
+  color: #FBBF24;
+}
+
+.budget-used-text.success {
+  color: #34D399;
+}
+
+.budget-over-text {
+  font-size: 11px;
+  color: #F87171;
+  font-weight: 500;
+}
+
+.budget-card {
+  padding: 24px;
+}
+
+.budget-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.budget-icon {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.18));
+  border: 1px solid rgba(16, 185, 129, 0.20);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.budget-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.budget-empty {
+  font-size: 13px;
+  color: #475569;
+  margin-bottom: 20px;
+  text-align: center;
+  padding: 12px 0;
+}
+
+.budget-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.budget-form-label {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #94A3B8;
+  margin: 0;
+}
+
+.budget-form-row {
+  display: flex;
+  gap: 10px;
+}
+
+.budget-form-select {
+  flex: 1;
+}
+
+.budget-form-input-wrap {
+  flex: 1;
+}

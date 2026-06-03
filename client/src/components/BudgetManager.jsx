@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { CATEGORIES, formatCurrency } from '../lib/utils';
 import { setBudget } from '../services/api';
 import { Target, CheckCircle2, AlertTriangle } from 'lucide-react';
+import './BudgetManager.css';
 
 function BudgetProgressBar({ category, budget, spent }) {
   if (!budget) return null;
@@ -11,11 +12,11 @@ function BudgetProgressBar({ category, budget, spent }) {
   const warn   = !over && rawPct > 75;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ fontSize: '13px', fontWeight: '500', color: '#CBD5E1' }}>{category}</span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ fontSize: '12px', color: over ? '#FCA5A5' : '#94A3B8', fontWeight: over ? '600' : '400' }}>
+    <div className="budget-progress-container">
+      <div className="budget-progress-header">
+        <span className="budget-category-label">{category}</span>
+        <div className="budget-amounts-container">
+          <span className={`budget-amounts-text ${over ? 'over' : 'normal'}`}>
             {formatCurrency(spent)} / {formatCurrency(budget)}
           </span>
           {over && <AlertTriangle size={12} color="#EF4444" />}
@@ -27,12 +28,12 @@ function BudgetProgressBar({ category, budget, spent }) {
           style={{ width: `${pct}%` }}
         />
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <span style={{ fontSize: '11px', color: over ? '#F87171' : warn ? '#FBBF24' : '#34D399', fontWeight: '500' }}>
+      <div className="budget-status-row">
+        <span className={`budget-used-text ${over ? 'danger' : warn ? 'warning' : 'success'}`}>
           {rawPct.toFixed(0)}% used
         </span>
         {over && (
-          <span style={{ fontSize: '11px', color: '#F87171', fontWeight: '500' }}>
+          <span className="budget-over-text">
             Over by {formatCurrency(spent - budget)}
           </span>
         )}
@@ -74,16 +75,10 @@ export default function BudgetManager({ budgets = {}, categoryBreakdown = [], on
   };
 
   return (
-    <div className="glass-card" style={{ padding: '24px' }}>
+    <div className="glass-card budget-card">
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-        <div style={{
-          width: '32px', height: '32px',
-          background: 'linear-gradient(135deg,rgba(16,185,129,0.25),rgba(5,150,105,0.18))',
-          border: '1px solid rgba(16,185,129,0.20)',
-          borderRadius: '9px',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
+      <div className="budget-header">
+        <div className="budget-icon">
           <Target size={15} color="#34D399" />
         </div>
         <h3 className="section-title">Set Category Budget</h3>
@@ -91,7 +86,7 @@ export default function BudgetManager({ budgets = {}, categoryBreakdown = [], on
 
       {/* Active budget progress bars */}
       {categoriesWithBudgets.length > 0 ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '20px' }}>
+        <div className="budget-list">
           {categoriesWithBudgets.map(cat => (
             <BudgetProgressBar
               key={cat}
@@ -102,7 +97,7 @@ export default function BudgetManager({ budgets = {}, categoryBreakdown = [], on
           ))}
         </div>
       ) : (
-        <p style={{ fontSize: '13px', color: '#475569', marginBottom: '20px', textAlign: 'center', padding: '12px 0' }}>
+        <p className="budget-empty">
           No budgets set yet. Set one below to start tracking.
         </p>
       )}
@@ -110,10 +105,10 @@ export default function BudgetManager({ budgets = {}, categoryBreakdown = [], on
       <div className="gradient-divider" />
 
       {/* Budget setter form */}
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-        <p style={{ fontSize: '12.5px', fontWeight: '500', color: '#94A3B8' }}>Set / Update Budget</p>
+      <form onSubmit={handleSubmit} className="budget-form">
+        <p className="budget-form-label">Set / Update Budget</p>
 
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div className="budget-form-row">
           <select
             id="budget-category"
             value={selectedCategory}
@@ -121,13 +116,12 @@ export default function BudgetManager({ budgets = {}, categoryBreakdown = [], on
               setSelectedCategory(e.target.value);
               setAmount(budgets[e.target.value] || '');
             }}
-            className="premium-input"
-            style={{ flex: 1 }}
+            className="premium-input budget-form-select"
           >
             {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
 
-          <div className="input-wrap" style={{ flex: 1 }}>
+          <div className="input-wrap budget-form-input-wrap">
             <span className="input-prefix">₹</span>
             <input
               id="budget-amount"

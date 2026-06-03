@@ -1,0 +1,52 @@
+/* ═══════════════════════════════════════════════
+   AnalyticsPanel.css
+═══════════════════════════════════════════════ */
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.analytics-card {
+  padding: 22px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.analytics-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.analytics-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin: 0;
+}
+
+.analytics-value {
+  font-size: 26px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin: 0;
+}
+
+.analytics-sub {
+  font-size: 12px;
+  color: #475569;
+  margin-top: 6px;
+  font-weight: 400;
+}
+
+.analytics-accent {
+  height: 2px;
+  border-radius: 99px;
+}

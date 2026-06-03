@@ -1,0 +1,62 @@
+/* ═══════════════════════════════════════════════
+   ExpenseForm.css
+═══════════════════════════════════════════════ */
+
+.form-card {
+  padding: 24px;
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.form-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-icon-box {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(139, 92, 246, 0.2));
+  border: 1px solid rgba(59, 130, 246, 0.20);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-cancel-btn {
+  background: rgba(100, 116, 139, 0.12);
+  border: 1px solid rgba(100, 116, 139, 0.18);
+  border-radius: 8px;
+  padding: 6px;
+  cursor: pointer;
+  color: #64748B;
+  display: flex;
+  align-items: center;
+  transition: all 0.15s ease;
+}
+
+.form-cancel-btn:hover {
+  color: #ffffff;
+  background: rgba(100, 116, 139, 0.22);
+}
+
+.form-error {
+  margin-bottom: 16px;
+}
+
+.form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-submit-btn {
+  margin-top: 4px;
+}
